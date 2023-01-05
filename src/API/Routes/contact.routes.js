@@ -43,6 +43,28 @@ contact_route.get('/contacts', async (req, res) => {
     }
 })
 
+
+/**
+ * Get numbers of people that arent my contact
+ */
+
+contact_route.get('/contacts/not', async (req, res) => {
+    try {
+        const contacts_ = (await client.getContacts()).filter( contact => contact.isGroup === false);
+        const contacts = contacts_.map(contact => {
+            return ({
+                number: contact.number,
+                name: contact.name,
+                pushname: contact.pushname,
+            })
+        })
+        res.send(contacts)
+    } catch (error) {
+        console.log(error);
+        res.send(error);
+    }
+})
+
 /**
  *  Get contact by number
  */
@@ -62,26 +84,6 @@ contact_route.get('/contacts/:number', async (req, res) => {
     }
 })
 
-
-/**
- * Get numbers of people that arent my contact
- */
-contact_route.get('/contacts/not', async (req, res) => {
-    try {
-        const contacts_ = (await client.getContacts()).filter( contact => contact.isGroup === false);
-        const contacts = contacts_.map(contact => {
-            return ({
-                number: contact.number,
-                name: contact.name,
-                pushname: contact.pushname,
-            })
-        })
-        res.send(contacts)
-    } catch (error) {
-        console.log(error);
-        res.send(error);
-    }
-})
 
 
 /**
