@@ -7,13 +7,13 @@
 const { Router } = require("express");
 const { client } = require('../../Client/client.js');
 
-const route = new Router()
+const contact_route = new Router()
 
 /**
  * Get All without parse
  */
 
-route.get('/all', async (req, res) => {
+contact_route.get('/contacts/all', async (req, res) => {
     try {
         const all = await client.getContacts();
         res.send(all);
@@ -26,7 +26,7 @@ route.get('/all', async (req, res) => {
 /**
  * Get contacts 
  */
-route.get('/contacts', async (req, res) => {
+contact_route.get('/contacts', async (req, res) => {
     try {
         const contacts_ = (await client.getContacts()).filter( contact => contact.isGroup === false && contact.isMyContact == true);
         const contacts = contacts_.map(contact => {
@@ -47,7 +47,7 @@ route.get('/contacts', async (req, res) => {
  *  Get contact by number
  */
 
- route.get('/contacts/:number', async (req, res) => {
+contact_route.get('/contacts/:number', async (req, res) => {
     try {
         const contacts_ = (await client.getContacts()).filter( contact => contact.isGroup === false);
         const contact = contacts_.find(cont => cont.number == req.params.number);
@@ -66,7 +66,7 @@ route.get('/contacts', async (req, res) => {
 /**
  * Get numbers of people that arent my contact
  */
-route.get('/contacts/not', async (req, res) => {
+contact_route.get('/contacts/not', async (req, res) => {
     try {
         const contacts_ = (await client.getContacts()).filter( contact => contact.isGroup === false);
         const contacts = contacts_.map(contact => {
@@ -88,7 +88,7 @@ route.get('/contacts/not', async (req, res) => {
  * Get groups
  */
 
-route.get('/groups', async (req, res) => {
+contact_route.get('/groups', async (req, res) => {
     try {
         const groups_ = (await client.getContacts()).filter( group => group.isGroup === true);
         const groups = groups_.map(group => {
@@ -109,7 +109,7 @@ route.get('/groups', async (req, res) => {
  * Get group by id
  *
  */
- route.get('/groups/:id', async (req, res) => {
+contact_route.get('/groups/:id', async (req, res) => {
     try {
         const groups_ = (await client.getContacts()).filter( group => group.isGroup === true);
         const group = groups_.find(group => group.id.user == req.params.id);
@@ -124,5 +124,5 @@ route.get('/groups', async (req, res) => {
 })
 
 
-exports.route = route;
+exports.contact_route = contact_route;
 

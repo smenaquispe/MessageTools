@@ -1,10 +1,12 @@
-const { route } = require("./Routes/contact.routes.js");
+const { contact_route } = require("./Routes/contact.routes.js");
+const { chat_route } = require("../API/Routes/chat.routes.js");
 const { client } = require('../Client/client.js');
 const express = require('express');
 
 const app = express()
 
-app.use(route);
+app.use(contact_route);
+app.use(chat_route);
 
 client.initialize();
 
