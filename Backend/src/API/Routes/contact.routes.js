@@ -29,14 +29,16 @@ contact_route.get('/contacts/all', async (req, res) => {
 contact_route.get('/contacts', async (req, res) => {
     try {
         const contacts_ = (await client.getContacts()).filter( contact => contact.isGroup === false && contact.isMyContact == true);
-        const contacts = contacts_.map(contact => {
+        const contacts = contacts_.map(async (contact) => {
             return ({
                 number: contact.number,
                 name: contact.name,
                 pushname: contact.pushname,
+                picture: await contact.getProfilePicUrl()
             })
         })
-        res.send(contacts)
+        const sent_contacts = await Promise.all(contacts);
+        res.send(sent_contacts);
     } catch (error) {
         console.log(error);
         res.send(error);
@@ -51,14 +53,16 @@ contact_route.get('/contacts', async (req, res) => {
 contact_route.get('/contacts/not', async (req, res) => {
     try {
         const contacts_ = (await client.getContacts()).filter( contact => contact.isGroup === false);
-        const contacts = contacts_.map(contact => {
+        const contacts = contacts_.map(async (contact) => {
             return ({
                 number: contact.number,
                 name: contact.name,
                 pushname: contact.pushname,
+                picture: await contact.getProfilePicUrl()
             })
         })
-        res.send(contacts)
+        const sent_contacts = await Promise.all(contacts);
+        res.send(sent_contacts);
     } catch (error) {
         console.log(error);
         res.send(error);
@@ -73,11 +77,15 @@ contact_route.get('/contacts/:number', async (req, res) => {
     try {
         const contacts_ = (await client.getContacts()).filter( contact => contact.isGroup === false);
         const contact = contacts_.find(cont => cont.number == req.params.number);
-        res.send({
+
+        const sent_contact = {
             number: contact.number,
             name: contact.name,
-            pushname: contact.pushname
-        })
+            pushname: contact.pushname,
+            picture: await contact.getProfilePicUrl()
+        }
+
+        res.send(sent_contact);
     } catch (error) {
         console.log(error);
         res.send(error);
@@ -93,14 +101,16 @@ contact_route.get('/contacts/:number', async (req, res) => {
 contact_route.get('/groups', async (req, res) => {
     try {
         const groups_ = (await client.getContacts()).filter( group => group.isGroup === true);
-        const groups = groups_.map(group => {
+        const groups = groups_.map(async (group) => {
             return ({
                 id : group.id.user,
-                name : group.name
+                name : group.name,
+                picture: await group.getProfilePicUrl()
             })
         }) 
 
-        res.send(groups)
+        const sent_groups = await Promise.all(groups);
+        res.send(sent_groups);
     } catch (error) {
         console.log(error);
         res.send(error);
@@ -115,10 +125,14 @@ contact_route.get('/groups/:id', async (req, res) => {
     try {
         const groups_ = (await client.getContacts()).filter( group => group.isGroup === true);
         const group = groups_.find(group => group.id.user == req.params.id);
-        res.send({
+
+        const sent_group = {
             id : group.id.user,
-            name : group.name
-        })
+            name : group.name,
+            picture : await group.getProfilePicUrl()
+        }
+        
+        res.send(sent_group)
     } catch (error) {
         console.log(error);
         res.send(error);
