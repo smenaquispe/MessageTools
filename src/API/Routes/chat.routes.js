@@ -2,9 +2,7 @@ const { Router } = require('express');
 const { client } = require('../../Client/client.js');
 const { formatDate } = require('../../Utils/date.js');
 
-
 const chat_route = new Router();
-
 
 /**
  * 
@@ -50,20 +48,24 @@ chat_route.get('/chats', async (req, res) => {
 /**
  * fetch messages from chat
  */
-
  chat_route.get('/chats/:id/messages', async (req, res) => {
-    const limit = 5; // es una constante random por ahora para obtener la cantidad de mensajes
-    const chat = (await client.getChats()).find(chat => req.params.id == chat.id.user);
-    const messages = await chat.fetchMessages(limit);
-    res.send(messages.map(m => {
+    const chat_ = (await client.getChats()).find(chat => req.params.id == chat.id.user);
+    const chat = await chat_.fetchMessages({
+        limit: 50
+    })
+
+    const promise_messages = chat.map(async (m) => {
         return ({
-            date: formatDate(new Date(m.timestamp)),
+            date: formatDate(m.timestamp),
             body: m.body,
             type: m.type,
-            from: m.fromMe ? 'Me' : 'Contact' 
+            from: m.fromMe ? 'Me' : (await m.getContact()).number
         })
-    }));
-})
+    })
 
+    const messages = await Promise.all(promise_messages)
+    res.send(messages);
+
+})
 
 exports.chat_route = chat_route;
