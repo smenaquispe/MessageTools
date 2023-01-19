@@ -1,20 +1,22 @@
-import * as API from '../API/API';
 import { Card, CardHeader, CardBody, CardFooter, Image, Button } from '@chakra-ui/react'
 import { Link } from 'react-router-dom';
-import { key } from 'localforage';
 import { contactV } from '../Interfaces/contactV.interface';
+import profile_default from '../assets/profile_default.jpg'
 
 export function Contact_view(contact : contactV){    
     return (
         <>
-            <Card>
+            <Card className='contact_view' align={'center'} width={'60'} bg={'green.100'} margin={'8'} height={'480'} >
                 <CardHeader>
-                    <Image src={contact.picture} width='200' height='200' ></Image>
+                    {
+                        contact.picture ? ( <Image src={contact.picture} width='200' height='200' ></Image> )
+                        : <Image src={profile_default} width='200' height='200' ></Image>
+                    }
                 </CardHeader>
                 <CardBody>
-                    <p>Phone number: {contact.number}</p>
-                    <p>Name: {contact.name}</p>
-                    <p>Push name: {contact.pushname}</p>
+                    <p className='phone_number' >Phone number: {contact.number} </p>
+                    <p className='name' >Name: {contact.name}</p>
+                    <p className='push_name' >Push name: {contact.pushname}</p>
                 </CardBody>
                 <CardFooter>
                     { contact.view_tools ? (
