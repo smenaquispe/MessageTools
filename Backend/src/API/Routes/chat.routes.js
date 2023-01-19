@@ -49,22 +49,27 @@ chat_route.get('/chats', async (req, res) => {
  * fetch messages from chat
  */
  chat_route.get('/chats/:id/messages', async (req, res) => {
-    const chat_ = (await client.getChats()).find(chat => req.params.id == chat.id.user);
-    const chat = await chat_.fetchMessages({
-        limit: 50
-    })
-
-    const promise_messages = chat.map(async (m) => {
-        return ({
-            date: formatDate(m.timestamp),
-            body: m.body,
-            type: m.type,
-            from: m.fromMe ? 'Me' : (await m.getContact()).number
+    try {
+        const chat_ = (await client.getChats()).find(chat => req.params.id == chat.id.user);
+        const chat = await chat_.fetchMessages({limit: 50});
+    
+        const promise_messages = chat.map(async (m) => {
+            return ({
+                date: formatDate(m.timestamp),
+                body: m.body,
+                type: m.type,
+                from: m.fromMe ? 'Me' : (await m.getContact()).number
+            })
         })
-    })
-
-    const messages = await Promise.all(promise_messages)
-    res.send(messages);
+    
+        const messages = await Promise.all(promise_messages)
+        res.send(messages);
+        return messages;
+    } catch (error) {
+        res.send(error);
+        console.warn(error);
+        return error;
+    }
 
 })
 

@@ -21,10 +21,12 @@ message_route.post('/message/send', async (req, res) => {
         const chatId = chat.id.user + "@c.us";
         await client.sendMessage(chatId,message);
         res.send(sending_respone);
+        return sending_respone;
 
     } catch (error) {
         console.log(error)
         res.send({'error' : error})
+        return {'error' : error};
     }
 })
 
