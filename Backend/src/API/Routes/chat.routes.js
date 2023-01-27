@@ -53,12 +53,21 @@ chat_route.get('/chats', async (req, res) => {
         const chat_ = (await client.getChats()).find(chat => req.params.id == chat.id.user);
         const chat = await chat_.fetchMessages({limit: 50});
     
+
         const promise_messages = chat.map(async (m) => {
+            
+            let media = '';
+            if(m.hasMedia && m.type.includes('image')){
+                media = (await m.downloadMedia()).data;
+            }
+
+
             return ({
                 date: formatDate(m.timestamp),
                 body: m.body,
                 type: m.type,
-                from: m.fromMe ? 'Me' : (await m.getContact()).number
+                from: m.fromMe ? 'Me' : (await m.getContact()).number,
+                media : media
             })
         })
     

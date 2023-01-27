@@ -2,5 +2,6 @@ export interface message {
     date : string,
     body : string,
     type : string,
-    from : string
+    from : string,
+    media ? : string 
 }

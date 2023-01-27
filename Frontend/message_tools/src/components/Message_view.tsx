@@ -18,6 +18,19 @@ export function Message_view(message : message){
                     Body : {message.body}
                     <br />
                     Type : {message.type}
+
+                    
+                    {
+                        /*
+                        message.media !== '' ?
+                        (
+                            <>
+                                <br />
+                                Message : {message.media}
+                            </>
+                        ) : <br />
+                        */
+                    }
                     <hr />
                 </p>
             }

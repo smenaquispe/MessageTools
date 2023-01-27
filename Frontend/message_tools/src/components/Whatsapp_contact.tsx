@@ -32,8 +32,6 @@ export function Whatsapp_contact(){
         }
     }, [number])
 
-    useEffect(() => {
-    })
 
     return (
         <>
@@ -44,7 +42,7 @@ export function Whatsapp_contact(){
                     <InputGroup>
                         <Input placeholder='write message' onChange={ handleMessage }></Input>
                         <InputRightElement>
-                            <Button onClick={handleButton} >Hola</Button>
+                            <Button onClick={handleButton} >Send</Button>
                         </InputRightElement>
                     </InputGroup>
 
@@ -67,6 +65,4 @@ export function Whatsapp_contact(){
             }
         </>
     )
-
-
 }   
