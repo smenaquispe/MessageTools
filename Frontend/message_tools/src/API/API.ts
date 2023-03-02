@@ -1,4 +1,5 @@
 import { contact } from "../Interfaces/contact.interface";
+import { media } from "../Interfaces/media.interface";
 import { message } from "../Interfaces/message.interface";
 
 /**
@@ -67,5 +68,27 @@ export async function getMessages(number : string) {
     } catch (error) {
         const c : message[] = [];       
         return c;
+    }
+}
+
+/** send media */
+export async function sendMedia(file : media){
+    try {
+        const returned = await fetch(`http://localhost:${port}/message/media/send`, {
+            method: 'POST',
+            body: JSON.stringify(file),
+            mode: 'cors', 
+            cache: 'no-cache',
+            credentials: 'same-origin', 
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            redirect: 'follow',
+            referrerPolicy: 'no-referrer', 
+        })
+        return returned.json() ;
+
+    } catch (error) {
+        return error
     }
 }

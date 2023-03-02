@@ -1,4 +1,5 @@
 const { Router } = require('express');
+const { MessageMedia } = require('whatsapp-web.js');
 const { client } = require('../../Client/client.js');
 
 const message_route = new Router()
@@ -20,6 +21,34 @@ message_route.post('/message/send', async (req, res) => {
 
         const chatId = chat.id.user + "@c.us";
         await client.sendMessage(chatId,message);
+        res.send(sending_respone);
+        return sending_respone;
+
+    } catch (error) {
+        console.log(error)
+        res.send({'error' : error})
+        return {'error' : error};
+    }
+})
+
+/**
+ * send media (image) to a contact
+ */
+message_route.post('/message/media/send', async (req, res) => {
+    try {
+        const { destinatary, data, type } = req.body;
+
+        const sending_respone = {
+            'message' : 'the message sent correctly',
+            'status' : 'sent to a current chat'
+        }
+
+        const msg = new MessageMedia(type ,data);
+        const chat = (await client.getChats()).find(ch => ch.id.user == destinatary);
+        if(chat === undefined)  sending_respone['status'] = 'sent to a new chat';
+
+        const chatId = chat.id.user + "@c.us";
+        await client.sendMessage(chatId,msg);
         res.send(sending_respone);
         return sending_respone;
 
