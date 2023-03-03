@@ -7,7 +7,6 @@ import { Button, Input, InputGroup, InputRightElement, Box, TagLabel } from '@ch
 import { Message_view } from './Message_view';
 import { message } from '../Interfaces/message.interface';
 import { media } from '../Interfaces/media.interface';
-import { imageToBase64 } from '../Utils/TextToImage';
 
 export function Whatsapp_contact(){
     const { number } = useParams<string>();
@@ -30,22 +29,6 @@ export function Whatsapp_contact(){
         .catch(console.warn);
     }
 
-    const handleImage = async (e : React.ChangeEvent<HTMLInputElement>) => {
-        const files = e.target.files;
-        let img;
-        files?.length && files.length > 0 ? img = files[0] : img = null;
-
-        
-        if(img){
-            const promise = await imageToBase64(img)
-            const m : media  = {
-                destinatary : contact.number,
-                type : img.type,
-                data : promise
-            }
-            setImage(m);
-        }
-    }
 
     const handleImageButton = (e : React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -74,13 +57,6 @@ export function Whatsapp_contact(){
                         <Input placeholder='write message' onChange={ handleMessage }></Input>
                         <InputRightElement>
                             <Button onClick={handleTextButton} >Send</Button>
-                        </InputRightElement>
-                    </InputGroup>
-
-                    <InputGroup>
-                        <Input type={'file'} onChange={ handleImage } ></Input>
-                        <InputRightElement>
-                            <Button onClick={handleImageButton} >Send Image</Button>
                         </InputRightElement>
                     </InputGroup>
 

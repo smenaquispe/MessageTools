@@ -32,6 +32,36 @@ message_route.post('/message/send', async (req, res) => {
 })
 
 /**
+ * 
+ * send a message to a list of contacts
+ */
+message_route.post('/message/send/list', async (req, res) => {
+    try {
+        const { list, message } = req.body;
+
+        const sending_respone = {}
+
+        list.forEach(async (dest) => {
+            try{
+                const chat = (await client.getChats()).find(ch => ch.id.user == dest);
+                const chatId = chat.id.user + "@c.us";
+                await client.sendMessage(chatId,message);
+                sending_respone[dest] = 'send correctly';
+            }catch(error){
+                sending_respone[dest] = `error send message: ${error}`
+            }
+        });
+
+        res.send(sending_respone)
+        return sending_respone
+
+    } catch (error) {
+        res.send({'error' : error})
+        return {'error' : error}        
+    }
+})
+
+/**
  * send media (image) to a contact
  */
 message_route.post('/message/media/send', async (req, res) => {
